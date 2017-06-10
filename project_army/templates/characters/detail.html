@@ -1,0 +1,41 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="slimmer">
+Postać użytkownika: {{ instance.user.username }}</br></br>
+
+<table class="slimmer table table-borderless">
+    <tr>
+        <th class="info col-xs-4">Płeć:</th>
+        <th>{{ instance.get_gender_display }}</th>
+    </tr>
+    <tr>
+        <th class="info col-xs-4">Rasa:</th>
+        <th>{{ instance.get_race_display }}</th>
+    </tr>
+    <tr>
+        <th class="info col-xs-4">Klasa:</th>
+        <th>{{ instance.get_class_x_display }}</th>
+    </tr>
+    <tr>
+        <th class="info col-xs-4">Posiadane złoto:</th>
+        <th>{{ instance.gold }}</th>
+    </tr>
+    <tr>
+        <th class="info col-xs-4">Posiadany ekwipunek:</th>
+        <th><table class="table">
+        {% for equ in equipment %}
+            <tr>
+                <th class="info col-xs-7"><a href="/equipment/{{ equ.id }}">{{ equ.name }}</a></th>
+                <th>{{ equ.get_weapon_type_display }}</th>
+            </tr>
+        {% endfor %}
+        </table>
+        </th>
+    </tr>
+</table>
+
+
+</div>
+
+{% endblock %}

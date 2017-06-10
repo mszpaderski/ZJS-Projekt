@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div>
+<table class="table table-striped table-hover">
+<thead>
+  <tr class="info">
+    <th class="text-center">Nazwa</th>
+    <th class="text-center">Cena</th> 
+    <th class="text-center">Rodzaj</th>
+  </tr>
+</thead>
+<tbody>
+{% for obj in querydata %}
+<tr>
+    <th class="text-center"><a href="/equipment/{{ obj.id }}">{{ obj.name }}</a></th>
+    <th class="text-center">{{ obj.price }}</th>
+    <th class="text-center">{{ obj.get_weapon_type_display }}</th>
+
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+{% endblock %}

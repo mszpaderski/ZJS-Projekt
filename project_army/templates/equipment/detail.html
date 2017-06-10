@@ -1,0 +1,35 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<table class="slimmer table table-borderless">
+    <tr>
+        <th class="info col-xs-2">Cena:</th>
+        <th>{{ instance.price }}</th>
+    </tr>
+    <tr>
+        <th class="info col-xs-2">Typ:</th>
+        <th>{{ instance.get_weapon_type_display }}</th>
+    </tr>
+    <tr>
+        <th class="info col-xs-2">Opis:</th>
+        <th>{{ instance.description }} </th>
+    </tr>
+</table>
+
+
+<form method='POST' action=''>{% csrf_token %}
+<button class="btn btn-warning" type=submit>Kup Dla:</button>
+<select name="character_name" class="btn btn-warning">
+{% for character in characters %}
+    <option value={{ character.id }}>{{ character.name }}</option>
+{% endfor %}
+</select>
+</form>
+
+{% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+
+
+{% endblock %}
