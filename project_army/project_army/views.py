@@ -1,11 +1,12 @@
+# -*- coding: utf-8 -*-
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 
-    
+
 def root_page(request):
-    return render(request, "index.html")
+    return render(request, "home.html")
 
 
 def signup(request):

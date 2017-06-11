@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from django.template import loader
 from django.http import HttpResponse, Http404
@@ -10,8 +11,8 @@ from .forms import Character_sheet_form, Equipment_form
 # Create your views here.
 
 
-#CHARACTERS
-#LIST
+# CHARACTERS
+# LIST
 def characters_list(request):
     querydata = Character_sheet.objects.all()
     passed_data = {
@@ -20,7 +21,8 @@ def characters_list(request):
     }
     return render(request, "characters/list.html", passed_data)
 
-#DETAIL
+
+# DETAIL
 def characters_detail(request, id):
     instance = get_object_or_404(Character_sheet, id=id)
     equipment = instance.equipment_set.all()
@@ -31,11 +33,12 @@ def characters_detail(request, id):
     }
     return render(request, "characters/detail.html", passed_data)
 
-#CREATE
+
+# CREATE
 def characters_new(request):
-    
+
     if request.user.groups.filter(name="Player").exists():
-    
+
         form = Character_sheet_form(request.POST or None)
         if form.is_valid():
             instance = form.save(commit=False)
@@ -51,8 +54,8 @@ def characters_new(request):
         raise Http404
 
 
-#EQUIPMENT
-#LIST
+# EQUIPMENT
+# LIST
 def equipment_list(request):
     querydata = Equipment.objects.all()
     passed_data = {
@@ -61,22 +64,28 @@ def equipment_list(request):
     }
     return render(request, "equipment/list.html", passed_data)
 
-#DETAIL
+
+# DETAIL
 def equipment_detail(request, id):
     instance = get_object_or_404(Equipment, id=id)
-    characters = get_list_or_404(Character_sheet, user=request.user)
+    characters = []
+    if request.user.groups.filter(name="Player").exists():
+        characters = get_list_or_404(Character_sheet, user=request.user)
     if request.method == "POST":
         character_id = request.POST.get("character_name")
         character_buy = get_object_or_404(Character_sheet, id=character_id)
-        if character_buy.gold >= instance.price: #if afford
-            current_gold = character_buy.gold - instance.price
-            instance.owned_by.add(character_buy)
-            instance.save()
-            Character_sheet.objects.filter(id=character_buy.id).update(gold=current_gold)
-            messages.success(request, "Kupiono!")
+        if not(instance.owned_by.filter(name=character_buy)):
+            if character_buy.gold >= instance.price:  # if afford
+                current_gold = character_buy.gold - instance.price
+                instance.owned_by.add(character_buy)
+                instance.save()
+                Character_sheet.objects.filter(id=character_buy.id).update(gold=current_gold)
+                messages.success(request, "Kupiono!")
+            else:
+                messages.error(request, "Za mało pieniędzy!")
         else:
-            messages.error(request, "Za mało pieniędzy!")
-            
+            messages.error(request, "Ta postać już to posiada, NIE KUPIONO!")
+
     passed_data = {
         "instance": instance,
         "title": instance.name,
@@ -84,7 +93,8 @@ def equipment_detail(request, id):
     }
     return render(request, "equipment/detail.html", passed_data)
 
-#CREATE
+
+# CREATE
 def equipment_new(request):
     if request.user.groups.filter(name="Game Master").exists():
         form = Equipment_form(request.POST or None)
